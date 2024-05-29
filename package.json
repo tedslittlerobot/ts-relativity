@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "ts-relativity": "index.js"
+    "ts-relativity": "index.js",
+    "ts-rel": "index.js"
   },
   "author": "Stefan Horner",
   "license": "MIT",
