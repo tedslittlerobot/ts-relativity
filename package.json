@@ -1,5 +1,5 @@
 {
-  "name": "ts-relativity",
+  "name": "@tedslittlerobot/ts-relativity",
   "version": "1.0.0",
   "description": "A tool to perform relative path replacements for ESM TS compilations",
   "main": "index.js",
@@ -7,6 +7,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "MIT"
+  "author": "Stefan Horner",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tedslittlerobot/ts-relativity.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tedslittlerobot/ts-relativity/issues"
+  },
+  "homepage": "https://github.com/tedslittlerobot/ts-relativity#readme"
 }
