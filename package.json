@@ -1,6 +1,6 @@
 {
   "name": "@tedslittlerobot/ts-relativity",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A tool to perform relative path replacements for ESM TS compilations",
   "main": "index.js",
   "type": "module",
