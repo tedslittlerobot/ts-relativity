@@ -1,15 +1,15 @@
 #! /usr/bin/env node
 
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { argv, env } from 'node:process';
+import {readFileSync, readdirSync, writeFileSync} from 'node:fs';
+import {argv, env} from 'node:process';
 
-const [ sourceDir, destinationDir ] = argv.slice(2);
+const [sourceDirectory, destinationDirectory] = argv.slice(2);
 
-replaceFilesInDirectory(destinationDir);
+replaceFilesInDirectory(destinationDirectory);
 
-////////////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////////////
 ///       Helpers                                                            ///
-////////////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////////////
 
 /**
  * Recursively replace with relative imports in a given directory
@@ -19,18 +19,18 @@ replaceFilesInDirectory(destinationDir);
  * @return Promise<void>
  */
 function replaceFilesInDirectory(directory, depth = 1) {
-  readdirSync(directory, { withFileTypes: true })
-    .map(async item => {
-      if (item.isDirectory()) {
-        replaceFilesInDirectory(`${directory}/${item.name}`, depth + 1)
+	readdirSync(directory, {withFileTypes: true})
+		.map(async item => {
+			if (item.isDirectory()) {
+				replaceFilesInDirectory(`${directory}/${item.name}`, depth + 1);
 
-        return;
-      }
+				return;
+			}
 
-      if (item.name.endsWith('.js')) {
-        performReplacements(directory, item.name, depth);
-      }
-    })
+			if (item.name.endsWith('.js')) {
+				performReplacements(directory, item.name, depth);
+			}
+		});
 }
 
 /**
@@ -42,29 +42,29 @@ function replaceFilesInDirectory(directory, depth = 1) {
  * @return Promise<void>
  */
 function performReplacements(directory, file, depth) {
-  const path = `${directory}/${file}`;
-  const contents = readFileSync(path, 'utf-8')
+	const path = `${directory}/${file}`;
+	const contents = readFileSync(path, 'utf8');
 
-  log(`Found file ${path}, contents size: ${contents.length}`);
+	log(`Found file ${path}, contents size: ${contents.length}`);
 
-  if (contents.length === 0) {
-    log(`Ignoring empty file ${path}`)
-    return;
-  }
+	if (contents.length === 0) {
+		log(`Ignoring empty file ${path}`);
+		return;
+	}
 
-  const replacements = contents
-    .replaceAll(`from "${sourceDir}/`, `from "${relativeEscapeForDepth(depth)}`)
-    .replaceAll(`from '${sourceDir}/`, `from '${relativeEscapeForDepth(depth)}`);
+	const replacements = contents
+		.replaceAll(`from "${sourceDirectory}/`, `from "${relativeEscapeForDepth(depth)}`)
+		.replaceAll(`from '${sourceDirectory}/`, `from '${relativeEscapeForDepth(depth)}`);
 
-  log(`Replaced ${path}, replaced size: ${replacements.length}`);
+	log(`Replaced ${path}, replaced size: ${replacements.length}`);
 
-  writeFileSync(
-    path,
-    replacements,
-    'utf-8'
-  )
+	writeFileSync(
+		path,
+		replacements,
+		'utf8',
+	);
 
-  log(`Wriiten file ${path}`);
+	log(`Wriiten file ${path}`);
 }
 
 /**
@@ -74,13 +74,15 @@ function performReplacements(directory, file, depth) {
  * @return {string}
  */
 function relativeEscapeForDepth(depth) {
-  if (depth === 1) return './';
+	if (depth === 1) {
+		return './';
+	}
 
-  return '../'.repeat(depth - 1);
+	return '../'.repeat(depth - 1);
 }
 
 function log(message) {
-  if (env.VERBOSE) {
-    console.info(message);
-  }
+	if (env.VERBOSE) {
+		console.info(message);
+	}
 }

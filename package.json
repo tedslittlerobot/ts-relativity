@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test:prepare": "rm -rf test/run && cp -r test/source test/run",
-    "test": "npm run test:prepare && VERBOSE=1 node index.js foo test/run && ava test.js"
+    "test": "npm run test:prepare && VERBOSE=1 node index.js foo test/run && ava test.js",
+    "lint": "xo index.js",
+    "lint:fix": "xo index.js --fix"
   },
   "bin": {
     "ts-relativity": "index.js",
@@ -26,6 +28,7 @@
   },
   "homepage": "https://github.com/tedslittlerobot/ts-relativity#readme",
   "devDependencies": {
-    "ava": "^6.1.3"
+    "ava": "^6.1.3",
+    "xo": "^0.58.0"
   }
 }

@@ -1,0 +1,17 @@
+name: Push to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        node-version:
+          - 18.x
+          - 20.x
+    uses: ./.github/workflows/x-test.yml
+    with:
+      node-version: ${{matrix.node-version}}

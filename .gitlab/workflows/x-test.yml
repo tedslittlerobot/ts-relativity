@@ -1,0 +1,25 @@
+name: Run Tests
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        required: true
+        type: string
+        description: The Node version to use.
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{node-version}}
+      - name: npm install
+        run: npm install
+      - name: Run Tests
+        run: npm run test
+      - name: Run Linter Check
+        run: npm run lint
