@@ -1,11 +1,11 @@
 #! /usr/bin/env node
 
-import { readFile, readdir, writeFile } from 'node:fs/promises';
-import { argv } from 'node:process';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { argv, env } from 'node:process';
 
 const [ sourceDir, destinationDir ] = argv.slice(2);
 
-await replaceFilesInDirectory(destinationDir);
+replaceFilesInDirectory(destinationDir);
 
 ////////////////////////////////////////////////////////////////////////////////
 ///       Helpers                                                            ///
@@ -18,17 +18,17 @@ await replaceFilesInDirectory(destinationDir);
  * @param  {Number} depth     A marker to store the depth level we are currently in
  * @return Promise<void>
  */
-async function replaceFilesInDirectory(directory, depth = 1) {
-  (await readdir(directory, { withFileTypes: true }))
-    .forEach(async item => {
+function replaceFilesInDirectory(directory, depth = 1) {
+  readdirSync(directory, { withFileTypes: true })
+    .map(async item => {
       if (item.isDirectory()) {
-        await replaceFilesInDirectory(`${directory}/${item.name}`, depth + 1)
+        replaceFilesInDirectory(`${directory}/${item.name}`, depth + 1)
 
         return;
       }
 
       if (item.name.endsWith('.js')) {
-        await performReplacements(directory, item.name, depth);
+        performReplacements(directory, item.name, depth);
       }
     })
 }
@@ -41,17 +41,30 @@ async function replaceFilesInDirectory(directory, depth = 1) {
  * @param  {Number} depth
  * @return Promise<void>
  */
-async function performReplacements(directory, file, depth) {
+function performReplacements(directory, file, depth) {
   const path = `${directory}/${file}`;
-  const contents = await readFile(path, 'utf-8')
+  const contents = readFileSync(path, 'utf-8')
 
-  await writeFile(
+  log(`Found file ${path}, contents size: ${contents.length}`);
+
+  if (contents.length === 0) {
+    log(`Ignoring empty file ${path}`)
+    return;
+  }
+
+  const replacements = contents
+    .replaceAll(`from "${sourceDir}/`, `from "${relativeEscapeForDepth(depth)}`)
+    .replaceAll(`from '${sourceDir}/`, `from '${relativeEscapeForDepth(depth)}`);
+
+  log(`Replaced ${path}, replaced size: ${replacements.length}`);
+
+  writeFileSync(
     path,
-    contents
-      .replaceAll(`from "${sourceDir}/`, `from "${relativeEscapeForDepth(depth)}`)
-      .replaceAll(`from '${sourceDir}/`, `from '${relativeEscapeForDepth(depth)}`),
+    replacements,
     'utf-8'
   )
+
+  log(`Wriiten file ${path}`);
 }
 
 /**
@@ -64,4 +77,10 @@ function relativeEscapeForDepth(depth) {
   if (depth === 1) return './';
 
   return '../'.repeat(depth - 1);
+}
+
+function log(message) {
+  if (env.VERBOSE) {
+    console.info(message);
+  }
 }
