@@ -1,0 +1,2 @@
+import hello from 'foo/hello.js';
+import hello from 'foo/bar/hello.js';

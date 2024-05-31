@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:prepare": "rm -rf test/run && cp -r test/source test/run",
+    "test": "node index.js foo test/run"
   },
   "bin": {
     "ts-relativity": "index.js",
@@ -23,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/tedslittlerobot/ts-relativity/issues"
   },
-  "homepage": "https://github.com/tedslittlerobot/ts-relativity#readme"
+  "homepage": "https://github.com/tedslittlerobot/ts-relativity#readme",
+  "devDependencies": {
+    "ava": "^6.1.3"
+  }
 }
