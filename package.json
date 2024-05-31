@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test:prepare": "rm -rf test/run && cp -r test/source test/run",
-    "test": "node index.js foo test/run"
+    "test": "npm run test:prepare && node index.js foo test/run && ava"
   },
   "bin": {
     "ts-relativity": "index.js",
